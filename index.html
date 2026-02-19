@@ -1,83 +1,109 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SnatchVideo - Fast Social Downloader</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f0f; color: white; text-align: center; padding: 50px 20px; }
-        .container { max-width: 600px; margin: auto; background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1 { color: #00ff88; margin-bottom: 20px; }
-        input { width: 90%; padding: 15px; border: none; border-radius: 8px; margin-bottom: 20px; font-size: 16px; }
-        button { width: 100%; padding: 15px; background: #00ff88; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 18px; color: #000; }
-        button:hover { background: #00cc6e; transform: scale(1.02); }
-        .result { margin-top: 30px; display: none; }
-        #downloadLink { display: block; margin-top: 20px; padding: 15px; background: #ff0055; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
-        .loading { display: none; color: #aaa; margin-top: 10px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnatchVideo HD - Free Video Downloader</title>
+
+<meta name="description" content="Download TikTok videos in HD quality instantly. Fast & Free.">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f0f0f;
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+}
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 15px;
+}
+h1 {
+    color: #00ff88;
+}
+input {
+    width: 90%;
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    margin-top: 20px;
+}
+button {
+    width: 95%;
+    padding: 15px;
+    background: #00ff88;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-top: 15px;
+    cursor: pointer;
+}
+button:hover {
+    background: #00cc6e;
+}
+.result {
+    margin-top: 30px;
+}
+a {
+    display: block;
+    margin-top: 15px;
+    padding: 15px;
+    background: #ff0055;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
-    <h1>🚀 SnatchVideo HD</h1>
-    <p>Download TikTok, Reels & Shorts in High Quality (No Watermark)</p>
-   
-    <input type="text" id="videoUrl" placeholder="Paste Video Link Here (TikTok, IG, etc.)">
-   
-    <!-- زر الاستخراج مربوط بـ Adsterra -->
-    <button onclick="handleDownload()">SNATCH CONTENT</button>
-   
-    <div class="loading" id="loader">Processing... Please Wait...</div>
+<h1>SnatchVideo HD 🚀</h1>
+<p>Fast TikTok Video Downloader</p>
 
-    <div class="result" id="resultArea">
-        <h3>Your Video is Ready!</h3>
-        <!-- رابط التحميل النهائي -->
-        <a id="downloadLink" href="#" target="_blank" onclick="triggerAd()">DOWNLOAD NOW (HD)</a>
-    </div>
+<input type="text" id="videoUrl" placeholder="Paste TikTok link here">
+<button onclick="handleDownload()">Download</button>
+
+<div class="result" id="result"></div>
 </div>
 
 <script>
-    // 1. رابط Adsterra Direct Link (حط الرابط ديالك هنا)
-    const ADSTERRA_URL = "YOUR_ADSTERRA_DIRECT_LINK_HERE";
+async function handleDownload() {
+    const url = document.getElementById('videoUrl').value;
 
-    async function handleDownload() {
-        const url = document.getElementById('videoUrl').value;
-        if(!url) return alert("Please paste a valid link!");
+    if (!url) {
+        alert("Paste a valid link!");
+        return;
+    }
 
-        document.getElementById('loader').style.display = 'block';
-        document.getElementById('resultArea').style.display = 'none';
+    document.getElementById('result').innerHTML = "Processing...";
 
-        // 2. تفركع إعلان Popunder فاش يضغط الزائر أول مرة
-        window.open(ADSTERRA_URL, '_blank');
+    try {
+        const response = await fetch(
+            `https://api.tiklydown.eu.org?url=${encodeURIComponent(url)}`
+        );
 
-        try {
-            // استخدام API مجاني (مثال لـ API سريع)
-            const response = await fetch(`https://api.tiklydown.eu.org{encodeURIComponent(url)}`);
-            const data = await response.json();
+        const data = await response.json();
 
-            if(data.result) {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('resultArea').style.display = 'block';
-                // جلب رابط الفيديو بدون علامة مائية
-                document.getElementById('downloadLink').href = data.result.video.no_watermark || data.result.video.url;
-            } else {
-                alert("Error! Try another link.");
-                document.getElementById('loader').style.display = 'none';
-            }
-        } catch (error) {
-            console.error(error);
-            alert("Connection error!");
-            document.getElementById('loader').style.display = 'none';
-        }
-    }
+        if (data.result) {
+            const videoUrl = data.result.video.no_watermark || data.result.video.url;
 
-    function triggerAd() {
-        // 3. تفركع إعلان ثاني فاش يجي يتيليشارجي بصح
-        setTimeout(() => {
-            window.open(ADSTERRA_URL, '_blank');
-        }, 100);
-    }
+            document.getElementById('result').innerHTML =
+                `<a href="${videoUrl}" target="_blank">DOWNLOAD HD</a>`;
+        } else {
+            document.getElementById('result').innerHTML = "Error fetching video.";
+        }
+
+    } catch (error) {
+        document.getElementById('result').innerHTML = "Connection error.";
+    }
+}
 </script>
 
 </body>
